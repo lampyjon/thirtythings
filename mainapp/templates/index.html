@@ -1,8 +1,60 @@
 {% extends 'base.html' %}
 {% load bootstrap5 %}
 
-{% block title %}django-bootstrap-v5{% endblock %}
+{% block title %}Thirty Things{% endblock %}
 
 {% block content %}
-    This is <em>bootstrap5</em> for <strong>Django</strong>.
+    	
+	<h3>This period ({{ this_period.start_date|date:"j M Y"}} - {{next_period.start_date|date:"j M Y"}})</h3><h5>(<a href="{% url 'period' previous_period.pk %}">previous</a> - <a href="{% url 'period' next_period.pk %}">next</a>)</h5>
+
+	<h4>You have eaten {{ eaten_foods.count }} items</h4>
+
+	<h3>Eaten</h3>
+	<table class="table">
+		<thead>
+			<tr><th>Un-eat</th><th>Item</th><th>Delete</th></tr>
+		</thead>
+		<tbody>
+	{% for food in eaten_foods %}
+		<tr>
+			<td><a href="{% url 'uneat' food.id this_period.id %}" type="button" class="btn btn-primary btn-sm" role="button">uneat</a></td>
+			<td><p>{{ food }}</p></td>
+			<td><a href="{% url 'delete' food.id %}" type="button" role="button" class="btn btn-danger btn-sm">delete</a></td>
+		</tr>
+	{% endfor %}
+
+		</tbody>
+	</table>
+
+	<h3>Uneaten</h3>
+
+	<table class="table">
+		<thead>
+			<tr><th>Eat</th><th>Item</th><th>Delete</th></tr>
+		</thead>
+		<tbody>
+	{% for food in uneaten_foods %}
+		<tr>
+			<td><a href="{% url 'eat' food.id this_period.id %}" type="button" class="btn btn-primary btn-sm" role="button">eat</a></td>
+			<td><p>{{ food }}</p></td>
+			<td><a href="{% url 'delete' food.id %}" type="button" role="button" class="btn btn-danger btn-sm">delete</a></td>
+		</tr>
+	{% endfor %}
+
+		</tbody>
+	</table>
+
+
+
+
+	<h2>Add new item:</h2>
+
+<form action="{% url 'add' %}" method="post" class="form">
+  {% csrf_token %}
+  {% bootstrap_form add_form %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">Add</button>
+  {% endbuttons %}
+</form>
+
 {% endblock %}
